@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="test_style.css">
+    <link rel="stylesheet" href="perfect-scrollbar-1.4.0/css/perfect-scrollbar.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="shortcut icon" href="favicon.jpg" type="image/x-icon">
+
+    
+    <script src="./perfect-scrollbar-1.4.0/dist/perfect-scrollbar.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <title>Quiz | Test - 1</title>
+</head>
+<body>
+    <div class="main-container">
+        <div class="navbar-container">
+            <div class="navbar">
+            </div>
+        </div>
+        <div id="container">
+            <div class="question-container">
+                <div class="bookmark-bar">
+                    <div class="material-icons bookmark-icon noSelect">bookmark_border</div>
+                </div>
+                <div class="question-text noSelect">
+                    <!-- fill -->
+                </div>
+            </div>
+            <div class="options-container">
+                <div class="option">
+                    <div class="material-icons option-icon">radio_button_unchecked</div>
+                    <div class="option-text" id="A"></div>
+                </div>
+                <div class="option">
+                    <div class="material-icons option-icon">radio_button_unchecked</div>
+                    <div class="option-text" id="B"></div>
+                </div>
+                <div class="option">
+                    <div class="material-icons option-icon">radio_button_unchecked</div>
+                    <div class="option-text" id="C"></div>
+                </div>
+                <div class="option">
+                    <div class="material-icons option-icon">radio_button_unchecked</div>
+                    <div class="option-text" id="D"></div>
+                </div>
+            </div>
+        </div> 
+        <div class="side-bar noSelect">
+            <div class="side-bar-title"></div>
+            <div class="side-bar-container">
+                <div class="side-bar-heading">Capgemini English</div>
+                <div class="material-icons timer-icon">timer</div><div class="timer">10m 5s</div>
+                <div class="submit-btn">Submit</div>
+                <div id="scroll">
+                    <div class="question-list-container">
+                        <!-- filled by using loop -->
+                    </div>
+
+                    <div class="scenarios">
+                        <div class="active"><div class="active-box"></div> Active</div>
+                        <div class="attempted"><div class="attempted-box"></div> Attempted</div>
+                        <div class="unattempted"><div class="unattempted-box"></div> Unattempted</div>
+                        <div class="review"><div class="review-box"></div> Review</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="test_script.js"></script>   
+</body>
+</html>
