@@ -272,15 +272,12 @@ body::-webkit-scrollbar {
     color: white;
 }
 
-.clear-options {
+.clear-options, .go-back, .go-next {
     width: 2.7rem;
     height: 2.7rem;
     font-size: 24px;
     position: absolute;
-    bottom: 1.5rem;
-    left: calc(75*0.48vw);
     border-radius: 50%;
-    background-color: rgb(108,125,108);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -288,7 +285,25 @@ body::-webkit-scrollbar {
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.clear-options:hover {
+.go-back {
+    color: rgb(133, 128, 128);
+    bottom: 1.5rem;
+    left: calc(75*0.05vw);
+}
+
+.go-next {
+    color: rgb(133, 128, 128);
+    bottom: 1.5rem;
+    right: calc(75*0.38vw);
+}
+
+.clear-options {
+    background-color: rgb(108,125,108);
+    bottom: 1.5rem;
+    left: calc(75*0.48vw);
+}
+
+.clear-options:hover, .go-back:hover, .go-next:hover {
     cursor: pointer;
     animation: sizeup 0.5s 1;
 }

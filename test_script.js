@@ -340,6 +340,20 @@ function loadQuestion(idx) {
             addClearButton();
         }
     }
+
+    if(idx == 0)
+    {
+        $('.go-back').hide();
+    }
+    else if(idx == DB.length-1)
+    {
+        $('.go-next').hide();
+    }
+    else 
+    {
+        $('.go-back').show();
+        $('.go-next').show();
+    }
 }
 
 function displayQuestionNos() {
@@ -464,3 +478,31 @@ function updateState(qno, state, ele=document.querySelector(`#q${currActiveQues}
         }
     }
 }
+
+$('.go-back, .go-next').on('mouseenter', function() {
+    $(this).removeClass('animation-sizedown');
+    setTimeout(() => $(this).addClass('enlarged-circle-btn'), 500);
+});
+
+$('.go-back, .go-next').on('mouseleave', function() {
+    setTimeout(() => $(this).removeClass('enlarged-circle-btn'), 500);
+    $(this).addClass('animation-sizedown');
+});
+
+$('.go-next').click(function() {
+    let next = currActiveQues + 1;
+    let idx = next - 1; // 0 based indexing
+    loadQuestion(idx); // question, options, selectedChoice
+    updateState(currActiveQues, 0, document.querySelector(`#q${currActiveQues}`));
+    updateState(idx+1, 1, document.querySelector(`#q${next}`));
+    currActiveQues = idx+1;
+});
+
+$('.go-back').click(function() {
+    let prev = currActiveQues - 1;
+    let idx = prev - 1;
+    loadQuestion(idx); // question, options, selectedChoice
+    updateState(currActiveQues, 0, document.querySelector(`#q${currActiveQues}`));
+    updateState(idx+1, 1, document.querySelector(`#q${prev}`));
+    currActiveQues = idx+1;
+});
