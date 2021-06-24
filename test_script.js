@@ -149,7 +149,7 @@ const DB = [{
     'answer': 'B'
 },
 {
-    'ques': 'Question 3',
+    'ques': 'Last Question',
     'options': ['window', 'this', 'spread', 'ES6'],
     'answer': 'B'
 }];
@@ -178,7 +178,7 @@ request.addEventListener('upgradeneeded', function() {
 
 // --------------------------------------------------------------------
 
-let countDownDate = new Date("June 22, 2021 18:45:00").getTime();
+let countDownDate = new Date("June 24, 2021 13:40:00").getTime();
 
 let timeOut = setInterval(function() {
     let now = new Date().getTime();
@@ -258,8 +258,16 @@ function loadQuestion(qId) {
     loadQuestion_Helper(qId);
 
     // For displaying buttons
-    if(idx == 0) $('.go-back').hide();
-    else if(idx == DB.length-1) $('.go-next').hide();
+    if(qId == 1) 
+    {
+        $('.go-back').hide();
+        $('.go-next').show();
+    }
+    else if(qId == DB.length) 
+    {
+        $('.go-next').hide();
+        $('.go-back').show();
+    }
     else 
     {
         $('.go-back').show();
