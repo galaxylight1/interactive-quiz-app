@@ -488,12 +488,13 @@ $('.option').click(function() {
             // UI
             document.getElementById(`q${currActiveQues}`).classList.add('attempted-label');
         }
-        else 
+        else if(st == 1)
         {
             // DB
             updateInDB_State(currActiveQues, 3); // combination of review & attempted; a new state -> 3
 
             // UI
+            document.getElementById(`q${currActiveQues}`).classList.remove('attempted-label'); // remove already applied one
             document.getElementById(`q${currActiveQues}`).classList.add('review-label'); // we will keep it under review
         }
     });
