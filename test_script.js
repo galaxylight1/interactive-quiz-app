@@ -2,12 +2,6 @@ const ps = new PerfectScrollbar('#scroll', {
     wheelSpeed: 0.5
 });
 
-// --------------------------------------------------------------------
-
-let currActiveQues = 1;
-
-// --------------------------------------------------------------------
-
 // Our DB is an array of objects consisting of question info
 const DB = [{
     'ques': 'You need to insert a digital signature. Determine which tab and group should be selected from the given options?',
@@ -169,7 +163,8 @@ request.addEventListener('success', function() {
 
     // Do this after loading DB
     displayQuestionNos();
-    loadQuestion(0);
+    initializeDB();
+    loadOnRefresh();
 });
 
 request.addEventListener('error', function() {
@@ -178,7 +173,7 @@ request.addEventListener('error', function() {
 
 request.addEventListener('upgradeneeded', function() {
     let db = request.result;
-    db.createObjectStore('states', { keyPath : 'mId' });
+    db.createObjectStore('states', { keyPath : 'qId' });
 });
 
 // --------------------------------------------------------------------
@@ -189,8 +184,6 @@ let timeOut = setInterval(function() {
     let now = new Date().getTime();
     let distance = countDownDate - now;
 
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
@@ -204,68 +197,162 @@ let timeOut = setInterval(function() {
 
 // --------------------------------------------------------------------
 
+let currActiveQues = 1;
 
-// TODO: toggle functionality
-$('.bookmark-icon').click(function() { // Add question for review
-    if(!$(this).hasClass('bookmarked'))
+function displayQuestionNos() {
+    let list_item_str = '';
+    $('.question-list-container').append(`<div class="question-no qno-selected" id="q1">1</div>`);
+    for(let i=2; i<=30; i++) 
     {
-        $(this).text('bookmark');
-        $(this).addClass('bookmarked');
-
-        updateState(currActiveQues, 3);
+        list_item_str += `<div class="question-no" id="q${i}">${i}</div>`;
     }
+    let list = $(`${list_item_str}`);
+    $('.question-list-container').append(list);
+}
+
+function initializeDB() {
+    let obj = dbAccess.transaction('states', 'readwrite').objectStore('states');
+
+    for(let i = 1; i <= 30; i++)
+    {
+        let data = {
+            qId: i,
+            state: 0,
+            selectedOption: '', 
+        }
+
+        obj.add(data);
+    }
+
+    for(let i = 1; i <= 30; i++)
+    {
+        // attach event listener to every question
+        $(`#q${i}`).click(function() {
+            let quesNo = Number($(this).text());
+
+            $('.qno-selected').removeClass('qno-selected');
+            $(this).addClass('qno-selected');
+            currActiveQues = quesNo;
+
+            loadQuestion(quesNo);
+        });
+    }
+
+    loadQuestion(1);
+}
+
+function loadQuestion(qId) {
+    let idx = qId - 1;
+    $('.question-text').text(DB[idx].ques);
+    $('#A').text(DB[idx].options[0]);
+    $('#B').text(DB[idx].options[1]);
+    $('#C').text(DB[idx].options[2]);
+    $('#D').text(DB[idx].options[3]);
+
+    $('.bookmark-icon').removeClass('bookmarked');
+    $('.bookmark-icon').text('bookmark_border');
+    $('.selected').removeClass('selected');
+    $('.option-icon').text('radio_button_unchecked');
+    $('.clear-options').remove();
+
+    loadQuestion_Helper(qId);
+
+    // For displaying buttons
+    if(idx == 0) $('.go-back').hide();
+    else if(idx == DB.length-1) $('.go-next').hide();
     else 
     {
-        $(this).text('bookmark_border');
-        $(this).removeClass('bookmarked');
-
-        unbookmark();
-    }
-});
-
-function unbookmark() {
-    let statesObjectStore = dbAccess.transaction('states', 'readwrite').objectStore('states');
-    let req = statesObjectStore.get(currActiveQues);
-
-    req.onerror = function(e) {
-        alert('Some error occured with the database! Please contact support team.');
-    };
-
-    req.onsuccess = function(e) {
-        let data = e.target.result;
-        data.state = 1;
-        statesObjectStore.put(data);
-        let el = $(`#q${currActiveQues}`);
-        el.removeClass('review-label');
-        el.addClass('qno-selected');
+        $('.go-back').show();
+        $('.go-next').show();
     }
 }
 
-$('.option').click(function() {
-    // first remove from already applied ones
-    $('.option-icon').text('radio_button_unchecked');
-    $('.selected').removeClass('selected');
-
-    // then add
-    if(!$(this).hasClass('selected'))
-    {
-        $(this).addClass('selected');
-        $($(this).children()[0]).text('radio_button_checked');
-
-        let id = $(`.selected .option-text`).attr('id'); // A, B, C, D
-        updateSelectedOption(currActiveQues, id);
-
-        let isClearPresent = $('.clear-options').length == 0 ? false : true;
-
-        if(!isClearPresent)
+function loadQuestion_Helper(qId) {
+    let p = loadFromDB(qId); 
+    p.then(function([st, op]) {
+        if(st == 1 || st == 3) // under review
         {
-            addClearButton();
+            document.querySelector('.bookmark-icon').innerText = 'bookmark';
+            document.querySelector('.bookmark-icon').classList.add('bookmarked');
         }
+
+        if(op === '') return;
+
+        document.getElementById(`${op}`).parentNode.classList.add('selected');
+        document.getElementById(`${op}`).previousElementSibling.innerText = 'radio_button_checked';
+        addClearButton();
+    });
+}
+
+async function loadFromDB(qId) {
+    return new Promise((resolve) => {
+        let obj = dbAccess.transaction('states', 'readwrite').objectStore('states');
+        let req = obj.get(qId);
+        req.onsuccess = function(e) {
+            let data = e.target.result;
+            resolve([data.state, data.selectedOption]);
+        }
+    });
+}
+
+function updateInDB_State(qId, s) {
+    let obj = dbAccess.transaction('states', 'readwrite').objectStore('states');
+
+    let req = obj.get(qId);
+    req.onsuccess = function(e) {
+        let data = e.target.result;
+
+        data.state = s;
+        obj.put(data);
     }
-});
+}
+
+function updateInDB_Option(qId, op) {
+    let obj = dbAccess.transaction('states', 'readwrite').objectStore('states');
+
+    let req = obj.get(qId);
+    req.onsuccess = function(e) {
+        let data = e.target.result;
+
+        data.selectedOption = op;
+        obj.put(data);
+    }
+}
+
+function loadOnRefresh() { // This function uses the advantage of IndexedDB: ability to save our answers and marked questions
+    let obj = dbAccess.transaction('states', 'readwrite').objectStore('states');
+    let req = obj.openCursor();
+    
+    req.addEventListener('success', function() {
+        let cursor = req.result;
+
+        if(cursor)
+        {
+            let data = cursor.value;
+            let q = data.qId;
+            let s = data.state;
+            let op = data.selectedOption;
+
+            if(s == 1)
+            {
+                $(`#q${q}`).addClass('review-label');
+            }
+            else if(s == 2)
+            {
+                $(`#q${q}`).addClass('attempted-label');
+            }
+            else if(s == 3)
+            {
+                $(`#q${q}`).addClass('review-label'); // still under review
+            }
+            
+            cursor.continue();
+        }        
+    });
+}
 
 function addClearButton() {
-    let clear = $(`<div class="clear-options">
+    let clear = $(`<div title="Clear Options" class="clear-options noSelect">
         <div class="material-icons">restart_alt</div>
     </div>`);
     $('#container').append(clear);
@@ -274,13 +361,38 @@ function addClearButton() {
     $('.clear-options').click(() => {
         clear.remove();
 
-        updateSelectedOption(currActiveQues, '');
-
+        // UI
         $('.option-icon').text('radio_button_unchecked');
         $('.selected').removeClass('selected');
+
+        // DB
+        updateInDB_Option(currActiveQues, '');
+
+        let p = loadFromDB(currActiveQues); 
+        p.then(function([st, op]) {
+            if(st == 2)
+            {
+                updateInDB_State(currActiveQues, 0);
+
+                // some left over UI changes
+
+                document.getElementById(`q${currActiveQues}`).classList.remove('attempted-label');
+                // active label was already applied, so no need to add it again
+            }
+            else if(st == 3)
+            {
+                updateInDB_State(currActiveQues, 1);
+
+                // some left over UI changes
+
+                document.getElementById(`q${currActiveQues}`).classList.remove('attempted-label');
+                // review label was already applied, so no need to add it again
+            }
+        });
+
     });
 
-    // For handling animations of scaling on CIRCLE BTNS
+    // for handling animations on circle btns
     $('.clear-options').on('mouseenter', function() {
         $(this).removeClass('animation-sizedown');
         setTimeout(() => $(this).addClass('enlarged-circle-btn'), 500);
@@ -292,192 +404,92 @@ function addClearButton() {
     });
 }
 
-function updateSelectedOption(qno, choice) {
-    let tx = dbAccess.transaction('states', 'readwrite');
-    let statesObjectStore = tx.objectStore('states');
-    
-    let req = statesObjectStore.get(qno);
-
-    req.onerror = function(e) {
-        alert('Some error occured with the database! Please contact support team.');
-    };
-
-    req.onsuccess = function(e) {
-        let data = e.target.result;
-        data.selectedOption = choice;
-        statesObjectStore.put(data);
-    }
-}
-
-function loadQuestion(idx) {
-    $('.question-text').text(DB[idx].ques);
-    $('#A').text(DB[idx].options[0]);
-    $('#B').text(DB[idx].options[1]);
-    $('#C').text(DB[idx].options[2]);
-    $('#D').text(DB[idx].options[3]);
-
-    // LOAD SELECTED CHOICE FROM DB
-    let tx = dbAccess.transaction('states', 'readwrite');
-    let statesObjectStore = tx.objectStore('states');
-
-    let req = statesObjectStore.get(idx+1);
-
-    req.onerror = function(e) {
-        alert('Some error occured with the database! Please contact support team.');
-    };
-
-    req.onsuccess = function(e) {
-        let data =  e.target.result;
-        let choice = data.selectedOption;
-
-        $('.option-icon').text('radio_button_unchecked');
-        $('.selected').removeClass('selected');
-        $('.clear-options').remove();
-        if(choice != '')
-        {
-            $(`#${choice}`).parent().addClass('selected');
-            $(`#${choice}`).prev().text('radio_button_checked');
-            addClearButton();
-        }
-    }
-
-    if(idx == 0)
+$('.bookmark-icon').click(function() {
+    if(!$(this).hasClass('bookmarked')) 
     {
-        $('.go-back').hide();
-    }
-    else if(idx == DB.length-1)
-    {
-        $('.go-next').hide();
-    }
-    else 
-    {
-        $('.go-back').show();
-        $('.go-next').show();
-    }
-}
-
-function displayQuestionNos() {
-    // Add question list items
-    let list_item_str = '';
-    $('.question-list-container').append(`<div class="question-no qno-selected" id="q1">1</div>`);
-    for(let i=2; i<=30; i++) 
-    {
-        list_item_str += `<div class="question-no" id="q${i}">${i}</div>`;
-    }
-    let list = $(`${list_item_str}`);
-    $('.question-list-container').append(list);
-    
-    let tx = dbAccess.transaction('states', 'readwrite');
-    let statesObjectStore = tx.objectStore('states');
-    
-    for(let i=1; i<=30; i++)
-    {
-        let data = {
-            mId: i,
-            state: 0,
-            selectedOption: '',
-        }
-        statesObjectStore.add(data);
-
-        $(`#q${i}`).click(function() {
-            let str = $(this).text();
-            let idx = Number(str) - 1;
-            
-            loadQuestion(idx); // question, options, selectedChoice
-            updateState(currActiveQues, 0, this);
-            updateState(idx+1, 1, this);
-            currActiveQues = idx+1;
-        });
-
-        loadStatesFromDB(i);
-    }
-
-    updateState(1, 1, document.querySelector(`#q1`));
-}
-
-function loadStatesFromDB(qno) {
-    let tx = dbAccess.transaction('states', 'readwrite');
-    let statesObjectStore = tx.objectStore('states');
-
-    let req = statesObjectStore.get(qno);
-
-    req.onerror = function(e) {
-        alert('Some error occured with the database! Please contact support team.');
-    };
-
-    req.onsuccess = function(e) {
-        let data =  e.target.result;
-        let state = data.state;
-
-        if(state == 0)
-        {
-            // nothing to do
-        }
-        else if(state == 1)
-        {
-            data.state = 0;
-            statesObjectStore.put(data);
-        }
-        else if(state == 2)
-        {
-            // do
-        }
-        else if(state == 3)
-        {
-            $(`#q${qno}`).addClass('review-label');
-        }
-    }
-}
-
-// Side note: refresh the DB in IndexedDB to see changes
-function updateState(qno, state, ele=document.querySelector(`#q${currActiveQues}`)) {
-    let tx = dbAccess.transaction('states', 'readwrite');
-    let statesObjectStore = tx.objectStore('states');
-
-    let req = statesObjectStore.get(qno);
-
-    req.onerror = function(e) {
-        alert('Some error occured with the database! Please contact support team.');
-    };
-
-    let el = $(ele);
-    req.onsuccess = function(e) {
-        let data = e.target.result;
-        if(data.state != 3) data.state = state; // update state here 0->unattempted 1->active 2->attempted 3->review
-
-        statesObjectStore.put(data);
-
-        if(data.state == 0)
-        {   
-            $('.qno-selected').removeClass('qno-selected');
-        }
-        else if(data.state == 1)
-        {   
-            if(el.hasClass('review-label'))
+        $(this).text('bookmark');
+        $(this).addClass('bookmarked');
+        let p = loadFromDB(currActiveQues); 
+        p.then(function([st, op]) {
+            if(st == 0)
             {
-                el.removeClass('review-label');
-                
-                let bookmarkicon = $('.bookmark-icon');
-                bookmarkicon.text('bookmark_border');
-                bookmarkicon.removeClass('bookmarked');
-            } 
-            el.addClass('qno-selected');
-        }
-        else if(data.state == 2)
-        {
-            // do
-        }
-        else if(data.state == 3)
-        {
-            $('.qno-selected').removeClass('qno-selected');
-            $(ele).addClass('review-label');
+                // DB
+                updateInDB_State(currActiveQues, 1);
 
-            let bookmarkicon = $('.bookmark-icon');
-            bookmarkicon.text('bookmark');
-            bookmarkicon.addClass('bookmarked');
-        }
+                // UI
+                document.getElementById(`q${currActiveQues}`).classList.add('review-label');
+            }
+            else if(st == 2)
+            {
+                // DB
+                updateInDB_State(currActiveQues, 3); // combination of review & attempted; a new state -> 3
+
+                // UI
+                document.getElementById(`q${currActiveQues}`).classList.remove('attempted-label'); // remove already applied one
+                document.getElementById(`q${currActiveQues}`).classList.add('review-label'); // we will keep it under review
+            }
+        });
     }
-}
+    else // un-reviewed
+    {
+        $(this).text('bookmark_border');
+        $(this).removeClass('bookmarked');
+        let p = loadFromDB(currActiveQues); 
+        p.then(function([st, op]) {
+            if(st == 1)
+            {
+                // DB
+                updateInDB_State(currActiveQues, 0);
+
+                // UI
+                document.getElementById(`q${currActiveQues}`).classList.remove('review-label');
+                // active label was already applied, so no need to add it again
+            }
+            else if(st == 3)
+            {
+                // DB
+                updateInDB_State(currActiveQues, 2); // bring it back to state 2 -> attempted; user has reviewed and then attempted
+
+                // UI
+                document.getElementById(`q${currActiveQues}`).classList.remove('review-label');
+                document.getElementById(`q${currActiveQues}`).classList.add('attempted-label'); 
+            }
+        });
+    }
+});
+
+$('.option').click(function() {
+    // remove from where already applied
+    $('.option-icon').text('radio_button_unchecked');
+    $('.selected').removeClass('selected');
+
+    $(this).addClass('selected');
+    $($(this).children()[0]).text('radio_button_checked');
+
+    if($('.clear-options').length == 0) addClearButton(); // avoid adding multiple clr btns
+
+    updateInDB_Option(currActiveQues, $(`.selected .option-text`).attr('id'));
+
+    let p = loadFromDB(currActiveQues); 
+    p.then(function([st, op]) {
+        if(st == 0)
+        {
+            // DB
+            updateInDB_State(currActiveQues, 2);
+
+            // UI
+            document.getElementById(`q${currActiveQues}`).classList.add('attempted-label');
+        }
+        else 
+        {
+            // DB
+            updateInDB_State(currActiveQues, 3); // combination of review & attempted; a new state -> 3
+
+            // UI
+            document.getElementById(`q${currActiveQues}`).classList.add('review-label'); // we will keep it under review
+        }
+    });
+});
 
 $('.go-back, .go-next').on('mouseenter', function() {
     $(this).removeClass('animation-sizedown');
@@ -491,18 +503,18 @@ $('.go-back, .go-next').on('mouseleave', function() {
 
 $('.go-next').click(function() {
     let next = currActiveQues + 1;
-    let idx = next - 1; // 0 based indexing
-    loadQuestion(idx); // question, options, selectedChoice
-    updateState(currActiveQues, 0, document.querySelector(`#q${currActiveQues}`));
-    updateState(idx+1, 1, document.querySelector(`#q${next}`));
-    currActiveQues = idx+1;
+    loadQuestion(next); 
+    currActiveQues++;
+
+    $('.qno-selected').removeClass('qno-selected');
+    $(`#q${currActiveQues}`).addClass('qno-selected');
 });
 
 $('.go-back').click(function() {
     let prev = currActiveQues - 1;
-    let idx = prev - 1;
-    loadQuestion(idx); // question, options, selectedChoice
-    updateState(currActiveQues, 0, document.querySelector(`#q${currActiveQues}`));
-    updateState(idx+1, 1, document.querySelector(`#q${prev}`));
-    currActiveQues = idx+1;
+    loadQuestion(prev); 
+    currActiveQues--;
+
+    $('.qno-selected').removeClass('qno-selected');
+    $(`#q${currActiveQues}`).addClass('qno-selected');
 });

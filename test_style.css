@@ -184,7 +184,11 @@ body::-webkit-scrollbar {
     background-color: rgb(249,200,71);
 }
 
-.review-label {
+.attempted-label {
+    background-color: rgb(97,213,139);
+}
+
+.review-label, .attempted-label {
     border: 1px solid black;
     color: black;
 }
@@ -299,7 +303,7 @@ body::-webkit-scrollbar {
 
 .clear-options {
     background-color: rgb(108,125,108);
-    bottom: 1.5rem;
+    bottom: 1.39rem;
     left: calc(75*0.48vw);
 }
 
