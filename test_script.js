@@ -178,7 +178,7 @@ request.addEventListener('upgradeneeded', function() {
 
 // --------------------------------------------------------------------
 
-let countDownDate = new Date("June 24, 2021 13:40:00").getTime();
+let countDownDate = new Date("June 25, 2021 15:50:00").getTime();
 
 let timeOut = setInterval(function() {
     let now = new Date().getTime();
@@ -194,6 +194,19 @@ let timeOut = setInterval(function() {
         document.querySelector('.timer').innerHTML = 'Time Over';
     }
 }, 1000);
+
+let saveTest = setInterval(function() {
+    let popup = $(`<div class="popup">
+        <div class="material-icons save-icon">security</div> Last Saved: Just Now
+    </div>`);
+
+    $('#container').append(popup);
+    popup.animate({
+        opacity: '0'
+    },  4000);
+
+    setTimeout(() => popup.remove(), 5000);
+}, 60000);
 
 // --------------------------------------------------------------------
 

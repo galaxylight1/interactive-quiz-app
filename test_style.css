@@ -562,6 +562,25 @@ mark {
     }
 }
 
+.popup {
+    background-color: #e2dfdf67;
+    position: absolute;
+    bottom: 0.2rem;
+    left: 0.5rem;
+    height: 1rem;
+    width: 8rem;
+    border-radius: 8px;
+    font-size: 10px;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.save-icon {
+    margin-right: 5px;
+}
+
 /* for removing blue highlights on clicking divs */
 .noSelect {
     -webkit-touch-callout: none;
