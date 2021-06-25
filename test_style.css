@@ -104,7 +104,7 @@ body::-webkit-scrollbar {
     border-radius: 5px;
 }
 
-.submit-btn:hover {
+.submit-btn:hover, .submit-modal-submit-btn:hover {
     opacity: 0.9;
     cursor: pointer;
 }
@@ -222,7 +222,7 @@ body::-webkit-scrollbar {
     font-size: 25px;
 }
 
-.bookmark-icon:hover, .option:hover, .close-modal:hover {
+.bookmark-icon:hover, .option:hover, .close-modal:hover, .submit-modal-go-back-btn:hover {
     cursor: pointer;
 }
 
@@ -374,7 +374,7 @@ body::-webkit-scrollbar {
     position: fixed;
     height: 100%;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.555);
+    background-color: rgba(0, 0, 0, 0.631);
     z-index: 3;
 
     animation: enlighten 0.3s;
@@ -499,7 +499,7 @@ mark {
     color: red;
 }
 
-.begin-test-btn {
+.begin-test-btn, .submit-modal-submit-btn, .submit-modal-go-back-btn {
     width: 8rem;
     height: 2.5rem;
     border: 2px solid rgb(112,189,84);
@@ -579,6 +579,62 @@ mark {
 
 .save-icon {
     margin-right: 5px;
+}
+
+.submit-modal-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 32rem;
+    height: 11rem;
+    margin-top: 5%;
+    justify-content: space-around;
+}
+
+.submit-modal-option {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 14rem;
+    height: 2rem;
+    border-radius: 5px;
+    font-size: 12.5px;
+    font-weight: 500;
+}
+
+#s1 {
+    background-color: rgba(0, 195, 255, 0.693);
+}
+
+#s2 {
+    background-color: rgb(216,216,216);
+}
+
+#s3 {
+    background-color: rgba(255, 201, 6, 0.659);
+}
+
+#s4 {
+    background-color: rgba(255, 85, 6, 0.679)
+}
+
+.submit-modal-side-container {
+    background-color: rgb(244,244,244);
+    width: 15vw;
+    height: calc(20rem - 0.19 * 20rem);
+    color: rgb(117,117,117);
+}
+
+.submit-modal-submit-btn {
+    margin-top: 3rem;
+    margin-left: 1rem;
+    background-color: rgb(112,189,84);
+    color: white;
+}
+
+.submit-modal-go-back-btn {
+    margin-top: 4.5rem;
+    margin-left: 1rem;
 }
 
 /* for removing blue highlights on clicking divs */

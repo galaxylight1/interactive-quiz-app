@@ -178,7 +178,7 @@ request.addEventListener('upgradeneeded', function() {
 
 // --------------------------------------------------------------------
 
-let countDownDate = new Date("June 25, 2021 15:50:00").getTime();
+let countDownDate = new Date("June 25, 2021 17:15:00").getTime();
 
 let timeOut = setInterval(function() {
     let now = new Date().getTime();
@@ -192,6 +192,14 @@ let timeOut = setInterval(function() {
     if (distance < 0) {
         clearInterval(timeOut);
         document.querySelector('.timer').innerHTML = 'Time Over';
+        HoldOn.open({
+            theme:"sk-circle",
+            message: "Submitting Test..."
+        });
+        setTimeout(() => {
+            HoldOn.close();
+            location.assign('./test_report.html');
+        }, 1000);
     }
 }, 1000);
 
@@ -580,4 +588,47 @@ $('.instructions').click(function() {
         $(modal).addClass('enlighten-reverse')
         setTimeout(() => modal.remove(), 300);
     });
+});
+
+$('.submit-btn').click(function() {
+    let modal = $(`<div class="modal-page">
+        <div class="modal">
+            <div class="modal-bar">
+                Submit Test
+                <div class="material-icons close-modal">close</div>
+            </div>
+            <div class="modal-containers">
+                <div class="modal-container-1">
+                    <h1>MCQS</h1>
+                    <div class="submit-modal-container noSelect">
+                        <div class="submit-modal-option" id="s1">
+                            Attempted Questions: 3
+                        </div>
+                        <div class="submit-modal-option" id="s2">
+                            Unattempted Questions: 16
+                        </div>
+                        <div class="submit-modal-option" id="s3">
+                            Marked for review and answered: 20
+                        </div>
+                        <div class="submit-modal-option" id="s4">
+                            Marked for review but not answered: 10
+                        </div>
+                    </div>
+                </div>
+                <div class="submit-modal-side-container">
+                    <div class="submit-modal-go-back-btn">Go Back</div>
+                    <div class="submit-modal-submit-btn">Submit<div class="material-icons begin-arrow">arrow_forward<div></div>
+                </div>
+            </div>
+        </div>
+    </div>`);
+
+    $('.main-container').append(modal);
+
+    $('.close-modal, .submit-modal-go-back-btn').click(function() {
+        $(modal).addClass('enlighten-reverse')
+        setTimeout(() => modal.remove(), 300);
+    });
+
+    $('.submit-modal-submit-btn').click(() => location.assign('./test_report.html'));
 });
