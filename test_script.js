@@ -527,3 +527,44 @@ $('.go-back').click(function() {
     $('.qno-selected').removeClass('qno-selected');
     $(`#q${currActiveQues}`).addClass('qno-selected');
 });
+
+$('.instructions').click(function() {
+    let modal = $(`<div class="modal-page">
+                    <div class="modal">
+                        <div class="modal-bar">
+                            Capgemini English Test - 1
+                            <div class="material-icons close-modal">close</div>
+                        </div>
+                        <div class="modal-containers">
+                            <div class="modal-container-1">
+                                <h1>Specific Instructions</h1>
+                                <div class="modal-info">
+                                    <div class="modal-keys">
+                                        <h2>DURATION</h2>  
+                                        <h2>SECTION </h2>
+                                        <h2>NUMBER OF QUESTIONS</h2>
+                                    </div>
+                                    <div class="modal-values">
+                                        <h2>40m</h2>  
+                                        <div class="section-and-marking">
+                                            <div class="section-type">Verbal</div>
+                                            <div class="marking-scheme"> <mark id="positive">+1</mark> <mark id="neutral">0</mark> <mark id="negative">-0.33</mark> </div>
+                                        </div>
+                                        <h2>30</h2>     
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-container-2">
+                                <h1>25 June</h1> <br> <div class="big-year">2021</div>
+                        </div>
+                    </div>
+            </div>
+    </div>`);
+
+    $('.main-container').append(modal);
+
+    $('.close-modal').click(function() {
+        $(modal).addClass('enlighten-reverse')
+        setTimeout(() => modal.remove(), 300);
+    });
+});
