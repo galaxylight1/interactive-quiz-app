@@ -148,7 +148,3 @@ const DB = [{
     'options': ['window', 'this', 'spread', 'ES6'],
     'answer': 'B'
 }];
-
-export function db() {
-    return DB;
-}
