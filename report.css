@@ -49,7 +49,7 @@ body::-webkit-scrollbar {
 }
 
 .report-container {
-    padding: 2rem;
+    padding: 4rem;
     width: 94%;
     height: 30rem;
     border-radius: 5px;
@@ -67,44 +67,33 @@ body::-webkit-scrollbar {
     justify-content: space-evenly;
 }
 
-.time-taken, .marks, .accuracy {
-    position: absolute;
-    top: 12rem;
-    left: 15.5rem;
-    font-weight: 500;
-}
-
-.time-taken, .accuracy {
-    top: 15rem;
-}
-
-.marks, .marks-label {
-    left: 32.8rem;
-}
-
-.accuracy, .accuracy-label {
-    left: 50rem;
-}
-
-.time-label, .marks-label, .accuracy-label {
-    position: absolute;
-    top: 20rem;
-    left: 13.8rem;
-    font-weight: 500;
-}
-
-.time-label, .accuracy-label {
-    top: 23rem;
-}
-
-.marks-label {
-    left: 32.5rem;
-}
-
-.accuracy-label {
-    left: 49.5rem;
+#prog1, #prog2, #prog3 {
+    text-align: center;
 }
 
 #prog1, #prog3 {
     margin-top: 3rem;
+}
+
+.marks, .accuracy, .time-taken {
+    font-weight: 500;
+}
+
+.time-label, .marks-label, .accuracy-label {
+    position: absolute;
+    font-weight: 500;
+    color:rgba(62, 62, 62, 0.776)
+}
+
+.time-label {
+    left: 14.9rem;
+}
+
+.marks-label {
+    top: 7.4rem;
+    left: 32.55rem;
+}
+
+.accuracy-label {
+    left: 48.6rem;
 }

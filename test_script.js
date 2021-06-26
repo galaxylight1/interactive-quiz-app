@@ -178,7 +178,10 @@ request.addEventListener('upgradeneeded', function() {
 
 // --------------------------------------------------------------------
 
-let countDownDate = new Date("June 25, 2021 17:15:00").getTime();
+let d1 = new Date();
+let d2 = new Date(d1);
+d2.setMinutes(d1.getMinutes() + 40);
+let countDownDate = new Date(d2).getTime();
 
 let timeOut = setInterval(function() {
     let now = new Date().getTime();
@@ -203,6 +206,7 @@ let timeOut = setInterval(function() {
     }
 }, 1000);
 
+// Last Saved: Just Now Popup
 let saveTest = setInterval(function() {
     let popup = $(`<div class="popup">
         <div class="material-icons save-icon">security</div> Last Saved: Just Now
@@ -630,5 +634,14 @@ $('.submit-btn').click(function() {
         setTimeout(() => modal.remove(), 300);
     });
 
-    $('.submit-modal-submit-btn').click(() => location.assign('./test_report.html'));
+    $('.submit-modal-submit-btn').click(() => {
+        let now = new Date().getTime();
+        let distance = now - d1.getTime();
+
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        let timeTaken = minutes;
+        location.assign(`./test_report.html?timeTaken=${timeTaken}`);
+    });
 });
