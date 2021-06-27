@@ -161,7 +161,7 @@ function sendCongratulations() {
 
     let no_selector = `#b${currQuestionID} .no-button`;
     $(no_selector).click(function() {
-        let str = currQuestionID == totalQuestions ? "And that brings us to an end in this practice set of Amazon's Data Structure MCQs. See you in the next one!<br><br>Cheers!" : "Let's move ahead.";
+        let str = currQuestionID == totalQuestions ? "And that brings us to an end in this practice set of General Aptitude MCQs. See you in the next one!<br><br>Cheers!" : "Let's move ahead.";
         let txt = $(`<img id="robot-avatar" style="margin-top: 2rem;" src="dexter.png" />
         <div class="preset-title">${str}</div>`);
         $('#container').append(txt);
@@ -209,7 +209,7 @@ function playSolutionVideo() {
     $('#container').append(video);
 
     $(video).bind('ended', function() {
-        let str = currQuestionID == totalQuestions ? "And that brings us to an end in this practice set of Capgemini Data Structure MCQs. See you in the next one!<br><br>Cheers!" : "Let's move ahead.";
+        let str = currQuestionID == totalQuestions ? "And that brings us to an end in this practice set of General Aptitude MCQs. See you in the next one!<br><br>Cheers!" : "Let's move ahead.";
         let txt = $(`<img id="robot-avatar" style="margin-top: 2rem;" src="dexter.png" />
         <div class="preset-title">${str}</div>`);
         $('#container').append(txt);
@@ -247,7 +247,7 @@ $('.side-bar-btn').click(function() {
     let sideBar = $(`<div class="side-bar">
     <div class="side-bar-title">
         <div class="material-icons side-bar-cancel-btn">highlight_off</div>
-        Data Structure MCQS
+        General Aptitude
     </div>
         <div class="practice-set" id="1">Practice Set - 1</div>
         <div class="practice-set" id="2">Practice Set - 2</div>
@@ -279,3 +279,5 @@ $('.side-bar-btn').click(function() {
 });
 
 $('.big-retake-btn').click(() => location.reload());
+
+$('.logo').click(() => location.assign('./index.html'));

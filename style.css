@@ -341,6 +341,10 @@ video {
     background-color: rgb(236,86,81);
 }
 
+.logo {
+    cursor: pointer;
+}
+
 /* for removing blue highlights on clicking divs */
 .noSelect {
     -webkit-touch-callout: none;

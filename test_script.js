@@ -4,24 +4,24 @@ const ps = new PerfectScrollbar('#scroll', {
 
 // Our DB is an array of objects consisting of question info
 const DB = [{
-    'ques': 'You need to insert a digital signature. Determine which tab and group should be selected from the given options?',
-    'options': ['View, Signature', 'Home, Editing', 'Insert, Text', 'Review, Proof'],
+    'ques': 'Find the number of 4 letter words which can be formed from word IMAGE using permutations without repetition.',
+    'options': ['20', '60', '120', '240'],
     'answer': 'C'
 },
 {
-    'ques': 'Question 2',
-    'options': ['tree', 'll', 'binary tree', 'graph'],
+    'ques': 'Which of the following concepts make extensive use of arrays?',
+    'options': ['Binary Trees', 'Scheduling', 'Caching', 'Spatial locality'],
     'answer': 'A'
 },
 {
-    'ques': 'Question 3',
-    'options': ['window', 'this', 'spread', 'ES6'],
-    'answer': 'B'
+    'ques': 'Find the number of 4 letter words which can be formed from word IMAGE if repetition is allowed.',
+    'options': ['120', '125', '625', '3125'],
+    'answer': 'C'
 },
 {
-    'ques': 'You need to insert a digital signature. Determine which tab and group should be selected from the given options?',
-    'options': ['View, Signature', 'Home, Editing', 'Insert, Text', 'Review, Proof'],
-    'answer': 'C'
+    'ques': 'In how many ways 2 red pens, 3 blue pens and 4 black pens can be arranged if same color pens are indistinguishable?',
+    'options': ['40320', '1260', '1440', '2880'],
+    'answer': 'B'
 },
 {
     'ques': 'Question 2',
@@ -178,9 +178,47 @@ request.addEventListener('upgradeneeded', function() {
 
 // --------------------------------------------------------------------
 
+function emptyDB() {
+    return new Promise((resolve) => {
+        let obj = dbAccess.transaction('states', 'readwrite').objectStore('states');
+
+        let req = obj.openCursor();
+        req.addEventListener('success', function() {
+
+            let cursor = req.result;
+
+            if(cursor) 
+            {
+                let data = cursor.value;
+
+                data.state = 0;
+                data.selectedOption = '';
+
+                cursor.continue();
+            }
+            else 
+            {
+                resolve();
+            }
+        });
+    });
+}
+
 let d1 = new Date();
 let d2 = new Date(d1);
-d2.setMinutes(d1.getMinutes() + 40);
+
+let data = JSON.parse(localStorage.getItem('timeLeft'));
+
+if(data == null)
+{
+    d2.setMinutes(d1.getMinutes() + 40);
+}
+else 
+{
+    d2.setMinutes(d1.getMinutes() + data[0].minutesLeft);
+    d2.setSeconds(d1.getSeconds() + data[0].secondsLeft);
+}
+
 let countDownDate = new Date(d2).getTime();
 
 let timeOut = setInterval(function() {
@@ -190,11 +228,16 @@ let timeOut = setInterval(function() {
     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    document.querySelector('.timer').innerHTML = minutes + "m " + seconds + "s ";
+    let time = minutes + "m " + seconds + "s ";
+    document.querySelector('.timer').innerHTML = time;
+
+    let data = [{minutesLeft: minutes, secondsLeft: seconds}];
+    localStorage.setItem('timeLeft', JSON.stringify(data));
 
     if (distance < 0) {
         clearInterval(timeOut);
         document.querySelector('.timer').innerHTML = 'Time Over';
+        localStorage.clear();
         HoldOn.open({
             theme:"sk-circle",
             message: "Submitting Test..."
@@ -554,10 +597,12 @@ $('.go-back').click(function() {
 });
 
 $('.instructions').click(function() {
+    const d = new Date();
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     let modal = $(`<div class="modal-page">
                     <div class="modal">
                         <div class="modal-bar">
-                            Capgemini English Test - 1
+                            Aptitude Test - 1
                             <div class="material-icons close-modal">close</div>
                         </div>
                         <div class="modal-containers">
@@ -572,7 +617,7 @@ $('.instructions').click(function() {
                                     <div class="modal-values">
                                         <h2>40m</h2>  
                                         <div class="section-and-marking">
-                                            <div class="section-type">Verbal</div>
+                                            <div class="section-type">Aptitude</div>
                                             <div class="marking-scheme"> <mark id="positive">+1</mark> <mark id="neutral">0</mark> <mark id="negative">-0.33</mark> </div>
                                         </div>
                                         <h2>30</h2>     
@@ -580,7 +625,7 @@ $('.instructions').click(function() {
                                 </div>
                             </div>
                             <div class="modal-container-2">
-                                <h1>25 June</h1> <br> <div class="big-year">2021</div>
+                                <h1>${d.getDate()} ${months[d.getMonth()]}</h1> <br> <div class="big-year">2021</div>
                         </div>
                     </div>
             </div>
@@ -594,54 +639,105 @@ $('.instructions').click(function() {
     });
 });
 
+function getStats() {
+    return new Promise((resolve) => {
+        let attempted = 0;
+        let markedForReviewAndAnswered = 0;
+        let markedForReviewAndNotAnswered = 0;
+
+        let obj = dbAccess.transaction('states', 'readwrite').objectStore('states');
+
+        let req = obj.openCursor();
+        req.addEventListener('success', function() {
+
+            let cursor = req.result;
+
+            if(cursor) 
+            {
+                let data = cursor.value;
+                let q = data.qId;
+                let s = data.state;
+                let op = data.selectedOption;
+
+                if(op != '')
+                {
+                    attempted++;
+                }
+
+                if(s == 3)
+                {
+                    markedForReviewAndAnswered++;
+                }
+                if(s == 1)
+                {
+                    markedForReviewAndNotAnswered++;
+                }
+
+                cursor.continue();
+            }
+            else 
+            {
+                resolve([attempted, 40 - attempted, markedForReviewAndAnswered, markedForReviewAndNotAnswered]);
+            }
+        });
+    });
+}
+
 $('.submit-btn').click(function() {
-    let modal = $(`<div class="modal-page">
-        <div class="modal">
-            <div class="modal-bar">
-                Submit Test
-                <div class="material-icons close-modal">close</div>
-            </div>
-            <div class="modal-containers">
-                <div class="modal-container-1">
-                    <h1>MCQS</h1>
-                    <div class="submit-modal-container noSelect">
-                        <div class="submit-modal-option" id="s1">
-                            Attempted Questions: 3
-                        </div>
-                        <div class="submit-modal-option" id="s2">
-                            Unattempted Questions: 16
-                        </div>
-                        <div class="submit-modal-option" id="s3">
-                            Marked for review and answered: 20
-                        </div>
-                        <div class="submit-modal-option" id="s4">
-                            Marked for review but not answered: 10
+    let p = getStats();
+    p.then(function([attempted, unattempted, markedForReviewAndAnswered, markedForReviewAndNotAnswered]) {
+        let modal = $(`<div class="modal-page">
+            <div class="modal">
+                <div class="modal-bar">
+                    Submit Test
+                    <div class="material-icons close-modal">close</div>
+                </div>
+                <div class="modal-containers">
+                    <div class="modal-container-1">
+                        <h1>MCQS</h1>
+                        <div class="submit-modal-container noSelect">
+                            <div class="submit-modal-option" id="s1">
+                                Attempted Questions: ${attempted}
+                            </div>
+                            <div class="submit-modal-option" id="s2">
+                                Unattempted Questions: ${unattempted}
+                            </div>
+                            <div class="submit-modal-option" id="s3">
+                                Marked for review and answered: ${markedForReviewAndAnswered}
+                            </div>
+                            <div class="submit-modal-option" id="s4">
+                                Marked for review but not answered: ${markedForReviewAndNotAnswered}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="submit-modal-side-container">
-                    <div class="submit-modal-go-back-btn">Go Back</div>
-                    <div class="submit-modal-submit-btn">Submit<div class="material-icons begin-arrow">arrow_forward<div></div>
+                    <div class="submit-modal-side-container">
+                        <div class="submit-modal-go-back-btn">Go Back</div>
+                        <div class="submit-modal-submit-btn">Submit<div class="material-icons begin-arrow">arrow_forward<div></div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>`);
+        </div>`);
 
-    $('.main-container').append(modal);
+        $('.main-container').append(modal);
 
-    $('.close-modal, .submit-modal-go-back-btn').click(function() {
-        $(modal).addClass('enlighten-reverse')
-        setTimeout(() => modal.remove(), 300);
-    });
+        $('.close-modal, .submit-modal-go-back-btn').click(function() {
+            $(modal).addClass('enlighten-reverse')
+            setTimeout(() => modal.remove(), 300);
+        });
 
-    $('.submit-modal-submit-btn').click(() => {
-        let now = new Date().getTime();
-        let distance = now - d1.getTime();
+        $('.submit-modal-submit-btn').click(() => {
+            let now = new Date().getTime();
+            let distance = now - d1.getTime();
 
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        let timeTaken = minutes;
-        location.assign(`./test_report.html?timeTaken=${timeTaken}`);
+            localStorage.clear();
+
+            let timeTaken = minutes;
+            location.assign(`./test_report.html?timeTaken=${timeTaken}`);
+        });
     });
 });
+
+$('.logo').click(() => location.assign('./index.html'));

@@ -642,6 +642,10 @@ mark {
     margin-left: 1rem;
 }
 
+.logo {
+    cursor: pointer;
+}
+
 /* for removing blue highlights on clicking divs */
 .noSelect {
     -webkit-touch-callout: none;

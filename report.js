@@ -38,7 +38,7 @@ function displayProgressBar(id, val) {
 }
 
 function displayReport(marks, accuracy, timeTaken, correct, skipped, wrong) {
-    let data = $(`<div class="goodbye-text">Thank you for attending Amazon's Data Structures Quiz</div>
+    let data = $(`<div class="goodbye-text">Thank you for attending General Aptitude Quiz</div>
     <div class="stats">
         <div id="prog1">
             <div class="time-taken">${timeTaken}m</div>
@@ -69,7 +69,7 @@ function displayReport(marks, accuracy, timeTaken, correct, skipped, wrong) {
     <div class="line"></div>
     <div class="goodbye-text" id="analysis-below">Analysis</div>
     <div class="analysis-box">
-        <div class="box-heading">Technical</div>
+        <div class="box-heading">Aptitude</div>
         <div class="line"></div>
         <div class="score">${marks}/30</div>
         <div class="your-score">Your Score</div>
@@ -137,4 +137,4 @@ function getResult() {
     });
 }
 
-$('.go-back-icon').click(() => location.assign('./mainarea.html'))
+$('.go-back-icon').click(() => location.assign('./index.html'))
