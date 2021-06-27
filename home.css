@@ -1,0 +1,161 @@
+* {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 19px;
+    font-weight: 350;   
+}
+
+body {
+    margin: 0;
+
+    /* hiding the scrollers */
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar-container {
+    height: 12vh;
+    width: 100%;
+}
+
+.navbar {
+    height: 9.5vh;
+    width: 100%;
+    background: linear-gradient(rgb(58, 58, 58) 0%, rgb(24, 24, 24) 10%, rgb(62, 62, 62) 50%, rgb(36, 36, 36) 100%);
+    background-color: #333;
+    box-shadow: 5px 3px 13px #888888e3;
+    position: fixed;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+}
+
+#container {
+    height: 100%; 
+    width: 100%;
+    background-color: rgb(255,255,255);
+    
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    margin-left: 0.8rem;
+}
+
+body {
+    background: url('./background.png');
+}
+
+.cloud-icon, .aplus-icon {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: 10rem;
+    left: 2rem;
+    opacity: 0.85;
+}
+
+.cloud-icon {
+    top: 5rem;
+    left: 56rem;
+    transform: rotate(0deg);
+    width: 110px;
+    height: 100px;
+}
+
+.aplus-icon {
+    top: 5.1rem;
+    left: 44.7rem;
+    transform: rotate(-25deg);
+}
+
+.main-text {
+    position: absolute;
+    top: 18vh;
+    left: 32.7vw;
+    font-weight: 500;
+    font-size: 27px;
+    color: rgb(55, 55, 55);
+    text-shadow:1px 1px 5px rgb(116, 115, 115), 1px 1px 10px rgb(184, 184, 184);
+    opacity: 0.95;
+}
+
+.practice-btn, .test-btn {
+    width: 8rem;
+    height: 2.5rem;
+    border: 2px solid rgb(227, 235, 224);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: rgb(112,189,84);
+    border-radius: 5px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+    margin-top: 4rem;
+    margin-left: 2.3rem;
+}
+
+.practice-btn {
+    position: absolute;
+    left: 21.5rem;
+    top: 6rem;
+    animation: moveright 1s;
+}
+
+.test-btn {
+    position: absolute;
+    left: 31.5rem;
+    top: 6rem;
+    animation: moveleft 1s;
+}
+
+.practice-btn:hover, .test-btn:hover {
+    opacity: 0.9;
+    cursor: pointer;
+    color: rgb(112,189,84);
+    background-color: white;
+    border: 2px solid rgb(112,189,84);
+}
+
+@keyframes moveright {
+    0% {
+        opacity: 0.2;
+        left: 10rem;
+    }
+    100% {
+        opacity: 1;
+        left: 21.5rem; 
+    }
+}
+
+@keyframes moveleft {
+    0% {
+        opacity: 0.2;
+        left: 43rem;
+    }
+    100% {
+        opacity: 1;
+        left: 31.5rem; 
+    }
+}
+
+/* for removing blue highlights on clicking divs */
+.noSelect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

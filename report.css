@@ -210,6 +210,21 @@ body::-webkit-scrollbar {
     margin-bottom: 1.5rem;
 }
 
+.go-back-icon {
+    margin-left: 1rem;
+    color: white;
+}
+
+.go-back-icon:hover {
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.logo {
+    position: absolute;
+    right: 1rem;
+}
+
 .noSelect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;

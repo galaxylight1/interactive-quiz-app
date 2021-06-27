@@ -27,6 +27,11 @@ body::-webkit-scrollbar {
     width: 100%;
 }
 
+.logo {
+    position: absolute;
+    right: 1rem;
+}
+
 .navbar {
     height: 9.5vh;
     width: 100%;

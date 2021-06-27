@@ -136,3 +136,5 @@ function getResult() {
         });
     });
 }
+
+$('.go-back-icon').click(() => location.assign('./mainarea.html'))

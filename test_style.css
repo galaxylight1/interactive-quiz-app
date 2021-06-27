@@ -602,6 +602,11 @@ mark {
     font-weight: 500;
 }
 
+.logo {
+    margin-left: 13.5rem;
+    margin-top: 0.3rem;
+}
+
 #s1 {
     background-color: rgba(0, 195, 255, 0.693);
 }
