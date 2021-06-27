@@ -110,14 +110,14 @@ body {
     position: absolute;
     left: 21.5rem;
     top: 6rem;
-    animation: moveright 1s;
+    /* animation: moveright 1s; */
 }
 
 .test-btn {
     position: absolute;
     left: 31.5rem;
     top: 6rem;
-    animation: moveleft 1s;
+    /* animation: moveleft 1s; */
 }
 
 .practice-btn:hover, .test-btn:hover {

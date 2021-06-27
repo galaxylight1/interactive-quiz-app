@@ -1,19 +1,21 @@
 let practiceSets = {
     1: {
         questionBank: {
-            1: {'ques': 'Consider an array of float. Calculate the difference between the address of the 1st and 4th element, assuming float occupies 4 bytes of memory.',
-                'options': ['16', '4', '12', '8']
+            1: {'ques': 'A motorboat, whose speed in 15 km/hr in still water goes 30 km downstream and comes back in a total of 4 hours 30 minutes. The speed of the stream (in km/hr) is:',
+                'options': ['123', '127', '235', '350'],
+                'solution': './video1.mp4'
             },
-            2: {'ques': 'Consider an array, A ={25, 25, 25, 24, 1, 4, 4, 4, x, 4, 4}. What is the minimum value of x, such that the sum of all elements of the array is a palindromic number?',
-            'options': ['2', '22', '11', '1']
+            2: {'ques': 'In a certain store, the profit is 320% of the cost. If the cost increases by 25% but the selling price remains constant, approximately what percentage of the selling price is the profit?',
+            'options': ['30%', '70%', '100%', '250%']
             },
-            3: {'ques': 'What is the optimal way to store details of n nodes each having 2 children?',
-            'options': ['1D Array', 'Array of Linked List', 'Linked List', '2D Array']
+            3: {'ques': 'A boat running downstream covers a distance of 16 km in 2 hours while for covering the same distance upstream, it takes 4 hours. What is the speed of the boat in still water?',
+            'options': ['3 km/h', '6 km/h', '8 km/h', '12 km/h'],
+            'solution': './video2.mp4'
             },
         },
         answerKey: {
-            1: 'C',
-            2: 'D',
+            1: 'B',
+            2: 'B',
             3: 'A',
         }
     },
@@ -202,7 +204,7 @@ function playSolutionVideo() {
     $('.five-dots').remove();
     
     video = document.createElement('video');
-    video.src = 'http://techslides.com/demos/sample-videos/small.mp4';
+    video.src = practiceSets[currPracticeSet].questionBank[currQuestionID].solution;
     video.controls = true;
     
     scrollWithDelay(200);
